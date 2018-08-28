@@ -8,3 +8,4 @@ from gym_minigrid.envs.putnear import *
 from gym_minigrid.envs.lockedroom import *
 from gym_minigrid.envs.playground_v0 import *
 from gym_minigrid.envs.redbluedoors import *
+from gym_minigrid.envs.mixedputnearlockedmultiroom import *
