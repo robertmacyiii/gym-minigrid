@@ -3,3 +3,5 @@
 *egg-info
 trained_models
 gym_minigrid/saved_gym_minigrid_episodes/
+.DS_Store
+gym_minigrid/.DS_Store
