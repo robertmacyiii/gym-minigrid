@@ -37,9 +37,13 @@ class ObssPreprocessor:
     def __init__(self, save_dir, obs_space):
         self.vocab = Vocabulary(save_dir)
         self.obs_space = {
-            "image": 147,
-            "instr": self.vocab.max_size
+            "image": obs_space.spaces["image"].shape,
+            "intr": self.vocab.max_size
         }
+        #self.obs_space = {
+        #    "image": 147,
+        #    "instr": self.vocab.max_size
+        #}
 
     def __call__(self, obss, device=None):
         """Converts a list of MiniGrid observations, i.e. a list of

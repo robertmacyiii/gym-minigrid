@@ -49,22 +49,41 @@ class ACModel(nn.Module, torch_rl.RecurrentACModel):
         if self.use_instr:
             self.embedding_size += self.instr_embedding_size
 
-        # Define actor's model
-        self.actor = nn.Sequential(
-            nn.Linear(self.embedding_size, 64),
-            nn.Tanh(),
-            nn.Linear(64, action_space.n)
+#        # Define actor's model
+#        self.actor = nn.Sequential(
+#            nn.Linear(self.embedding_size, 64),
+#            nn.Tanh(),
+#            nn.Linear(64, action_space.n)
+#        )
+#
+#        # Define critic's model
+#        self.critic = nn.Sequential(
+#            nn.Linear(self.embedding_size, 64),
+#            nn.Tanh(),
+#            nn.Linear(64, 1)
+#        )
+        # Define joint penultimate fully connected layer.
+        penultimate_fc_embedding_size = self.agent_embedding_size(obs_space)[0]
+        self.penultimate_fc = nn.Sequential(
+            nn.Linear(penultimate_fc_embedding_size, 64),
+            nn.Tanh()
         )
 
+        # Define actor's model
+        self.actor = nn.Linear(64, action_space.n)
+
         # Define critic's model
-        self.critic = nn.Sequential(
-            nn.Linear(self.embedding_size, 64),
-            nn.Tanh(),
-            nn.Linear(64, 1)
-        )
+        self.critic = nn.Linear(64, 1)
 
         # Initialize parameters correctly
         self.apply(initialize_parameters)
+
+    def agent_embedding_size(self, obs_space):
+        input_size = (1, obs_space["image"][2], obs_space["image"][0], obs_space["image"][1])
+        dummy_input = torch.randn((input_size))
+        dummy_output = self.image_conv(dummy_input)
+        dummy_output = dummy_output.reshape(dummy_output.shape[0], -1)
+        return dummy_output.shape[1:]
 
     @property
     def memory_size(self):
@@ -91,6 +110,8 @@ class ACModel(nn.Module, torch_rl.RecurrentACModel):
             embed_instr = self._get_embed_instr(obs.instr)
             embedding = torch.cat((embedding, embed_instr), dim=1)
 
+        embedding = self.penultimate_fc(embedding)
+        self.final_activation = embedding.data
         x = self.actor(embedding)
         dist = Categorical(logits=F.log_softmax(x, dim=1))
 
