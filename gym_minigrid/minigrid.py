@@ -947,7 +947,7 @@ class MiniGridEnv(gym.Env):
         if obj is not None:
             obj.init_pos = pos
             obj.cur_pos = pos
-        #import pdb;pdb.set_trace()
+
         return pos
 
     def place_agent(
