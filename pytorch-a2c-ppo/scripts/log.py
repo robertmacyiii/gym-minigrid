@@ -117,10 +117,13 @@ def save_episode(episode, data_path, lockeddoor):
     labels_path = os.path.join(episode_path, 'labels.npy')
     labels = np.asarray(labels).reshape(-1, 1)
     np.save(labels_path, labels)
-    symbolic_obs_path = os.path.join(episode_path, 'symbolic_obs.pkl')
-    symbolic_obs = episode['symbolic_obs']
-    with open(symbolic_obs_path, 'wb') as file:
-        pkl.dump(symbolic_obs, file)
+    symbolic_obs = [np.expand_dims(episode['symbolic_obs'][t], 0) for t in range(len(episode['symbolic_obs']))]
+    symbolic_obs = np.concatenate(symbolic_obs)
+    symbolic_obs_path = os.path.join(episode_path, 'symbolic_obs.npy')
+    np.save(symbolic_obs_path, symbolic_obs)
+    final_activations_path = os.path.join(episode_path, 'final_activations.npy')
+    final_activations = np.concatenate(episode['final_activations'])
+    np.save(final_activations_path, final_activations)
     lockeddoor_path = os.path.join(episode_path, 'lockeddoor.pkl')
     with open(lockeddoor_path, 'wb') as file:
         pkl.dump(lockeddoor, file)
@@ -139,7 +142,7 @@ if not os.path.isdir(data_path):
     os.makedirs(data_path)
 
 
-for episode_index in range(10):
+for episode_index in range(50):
     done = False
     obs = env.reset()
     #print("Instr:", obs["mission"])
@@ -151,9 +154,10 @@ for episode_index in range(10):
     episode['actions'] = []
     episode['switches'] = []
     episode['info'] = []
-    episode['symbolic_obs'] = []
     episode['obs'].append(obs)
     episode['states'].append(env.render().getArray())
+    episode['symbolic_obs'] = []
+    episode['final_activations'] = []
 
 
     while not done:
@@ -169,7 +173,7 @@ for episode_index in range(10):
         episode['info'].append(info)
         episode['states'].append(env.render().getArray())
         episode['symbolic_obs'].append(info.pop('symbolic_obs'))
-        #import pdb;pdb.set_trace()
+        episode['final_activations'].append(agent.model.final_activation)
         if len(info.keys()) > 1:
             raise SystemError
         elif len(info.keys()) == 0:

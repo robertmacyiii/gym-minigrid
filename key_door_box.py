@@ -74,7 +74,7 @@ def similarity(val1, val2):
 
 actr.add_command('similarity_function',similarity)
 #actr.add_command('new_blend_request', new_blend_request)
-actr.load_act_r_model("/Users/paulsomers/COGLE/gym-minigrid/key-door-box.lisp")
+actr.load_act_r_model("/Users/paulsomers/COGLE/robert-minigrid/gym-minigrid/key-door-box.lisp")
 actr.record_history("blending-trace")
 
 
@@ -91,7 +91,7 @@ actr.record_history("blending-trace")
 
 def load_chunks():
     #some prototype chunks
-    chks = pickle.load(open('/Users/paulsomers/COGLE/gym-minigrid/chunks.p','rb'))
+    chks = pickle.load(open('/Users/paulsomers/COGLE/robert-minigrid/gym-minigrid/chunks.p','rb'))
 
     for x in chks:
         actr.add_dm(x)

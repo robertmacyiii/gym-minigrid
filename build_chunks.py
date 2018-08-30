@@ -5,7 +5,7 @@ import itertools
 import actr
 
 
-root_path = '/Users/paulsomers/COGLE/saved_gym_minigrid_episodes/mixedputnearlockedmultiroom_n4s6/'
+root_path = '/Users/paulsomers/COGLE/robert-minigrid/gym-minigrid/gym_minigrid/saved_gym_minigrid_episodes/FullObsDoorKeyEnv7x7'
 episode_folders = (next(os.walk(root_path))[1])
 
 
@@ -89,8 +89,8 @@ def build_chunks_from_data():
         switches = np.load(filepath)
 
         #symbolic obs
-        filepath = os.path.join(root_path, episode, "symbolic_obs.pkl")
-        symbolic_obs = pickle.load(open(filepath,'rb'))
+        filepath = os.path.join(root_path, episode, "symbolic_obs.npy")
+        symbolic_obs = np.load(filepath)
         #rebuilt the symbolic obs
         s_obs = []
 
@@ -121,6 +121,6 @@ def build_chunks_from_data():
 
 
 #Sample code
-# chunks = build_chunks_from_data()
-# pickle.dump(chunks, open('chunks.p','wb'))
+chunks = build_chunks_from_data()
+pickle.dump(chunks, open('chunks.p','wb'))
 #print("done")
