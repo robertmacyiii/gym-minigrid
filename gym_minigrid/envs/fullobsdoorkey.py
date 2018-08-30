@@ -1,5 +1,5 @@
 from copy import deepcopy 
-
+import numpy as np
 from gym_minigrid.minigrid import *
 from gym_minigrid.register import register
 
@@ -25,6 +25,8 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         })
 
     def _gen_grid(self, width, height):
+
+
         # Create an empty grid
         self.grid = Grid(width, height)
 
@@ -35,6 +37,8 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         self.grid.set(width - 2, height - 2, Goal())
 
         # Create a vertical splitting wall
+        #import pdb;pdb.set_trace()
+        #np.random.seed(1234)
         splitIdx = self._rand_int(2, width-2)
         self.grid.vert_wall(splitIdx, 0)
 

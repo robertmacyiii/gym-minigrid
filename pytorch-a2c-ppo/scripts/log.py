@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#python -m scripts.enjoy --env MiniGrid-FullObsDoorKey-7x7-v0 --model FullObsDoorKey-7x7 --seed=1234 --argmax
 
 import argparse
 import gym
@@ -112,7 +113,11 @@ def save_episode(episode, data_path):
     labels_path = os.path.join(episode_path, 'labels.npy')
     labels = np.asarray(labels).reshape(-1, 1)
     np.save(labels_path, labels)
-    
+    symbolic_obs_path = os.path.join(episode_path, 'symbolic_obs.pkl')
+    symbolic_obs = episode['symbolic_obs']
+    with open(symbolic_obs_path, 'wb') as file:
+        pkl.dump(symbolic_obs, file)
+
 
 import uuid
 from scipy import misc
@@ -125,7 +130,9 @@ import pickle as pkl
 from torchvision import transforms
 if not os.path.isdir(data_path):
     os.makedirs(data_path)
-for episode_index in range(640):
+
+
+for episode_index in range(2):
     done = False
     obs = env.reset()
     #print("Instr:", obs["mission"])
@@ -137,6 +144,7 @@ for episode_index in range(640):
     episode['actions'] = []
     episode['switches'] = []
     episode['info'] = []
+    episode['symbolic_obs'] = []
     episode['obs'].append(obs)
     episode['states'].append(env.render().getArray())
 
@@ -153,11 +161,14 @@ for episode_index in range(640):
         episode['done'].append(done)
         episode['info'].append(info)
         episode['states'].append(env.render().getArray())
+        episode['symbolic_obs'].append(info.pop('symbolic_obs'))
+        #import pdb;pdb.set_trace()
         if len(info.keys()) > 1:
             raise SystemError
         elif len(info.keys()) == 0:
             info['no_event'] = True
         info_keys = list(info.keys())
+        #import pdb;pdb.set_trace()
         episode['switches'].append(INFO_MAP[info_keys[0]])
         agent.analyze_feedback(reward, done)
     
