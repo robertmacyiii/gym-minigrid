@@ -44,8 +44,10 @@ class FullObsDoorKeyEnv(MiniGridEnv):
 
         # Place the agent at a random position and orientation
         # on the left side of the splitting wall
-        self.start_pos = self.place_agent(size=(splitIdx, height))
-
+        self.start_pos = np.array([1,4])
+        self.grid.set(1,4,None)
+        self.start_dir = 3#self.place_agent(size=(splitIdx, height))
+        #import pdb;pdb.set_trace()
         # Place a door in the wall
         doorIdx = 4#self._rand_int(1, width-2)
         self.grid.set(splitIdx, doorIdx, LockedDoor('yellow'))

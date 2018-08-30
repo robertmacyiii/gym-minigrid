@@ -926,6 +926,7 @@ class MiniGridEnv(gym.Env):
                 self._rand_int(top[0], top[0] + size[0]),
                 self._rand_int(top[1], top[1] + size[1])
             ))
+            pos = np.array([2,5])
 
             # Don't place the object on top of another object
             if self.grid.get(*pos) != None:
@@ -946,7 +947,7 @@ class MiniGridEnv(gym.Env):
         if obj is not None:
             obj.init_pos = pos
             obj.cur_pos = pos
-
+        #import pdb;pdb.set_trace()
         return pos
 
     def place_agent(
