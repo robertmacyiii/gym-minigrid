@@ -39,7 +39,7 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         # Create a vertical splitting wall
         #import pdb;pdb.set_trace()
         #np.random.seed(1234)
-        splitIdx = self._rand_int(2, width-2)
+        splitIdx = 3#self._rand_int(2, width-2)
         self.grid.vert_wall(splitIdx, 0)
 
         # Place the agent at a random position and orientation
