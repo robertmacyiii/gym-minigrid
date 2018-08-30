@@ -43,7 +43,7 @@ save_dir = utils.get_save_dir(args.model)
 agent = utils.Agent(save_dir, env.observation_space, args.argmax)
 
 # episode type
-lockeddoor = 1
+lockeddoor = 0
 
 # Run the agent
 
@@ -154,7 +154,7 @@ spec.loader.exec_module(build_chunks)
 if not os.path.isdir(data_path):
     os.makedirs(data_path)
 
-for episode_index in range(50):
+for episode_index in range(1):
     done = False
     obs = env.reset()
     # print("Instr:", obs["mission"])
@@ -185,6 +185,12 @@ for episode_index in range(50):
         episode['states'].append(env.render().getArray())
         episode['symbolic_obs'].append(info.pop('symbolic_obs'))
         episode['final_activations'].append(agent.model.final_activation)
+        #import pdb;pdb.set_trace()
+        activation = episode['final_activations'][0]
+        activation = activation.data.numpy()
+        chunk = build_chunks.build_chunk('observation',episode['symbolic_obs'][-1],lockeddoor,np.ndarray.tolist(activation))
+        runactr = key_door_box.probe(chunk)
+        done = True
         if len(info.keys()) > 1:
             raise SystemError
         elif len(info.keys()) == 0:

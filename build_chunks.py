@@ -121,6 +121,6 @@ def build_chunks_from_data():
 
 
 #Sample code
-chunks = build_chunks_from_data()
-pickle.dump(chunks, open('chunks.p','wb'))
+#chunks = build_chunks_from_data()
+#pickle.dump(chunks, open('chunks.p','wb'))
 #print("done")

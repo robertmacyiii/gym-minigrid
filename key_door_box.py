@@ -65,8 +65,8 @@ def similarity(val1, val2):
     #return 0
     #print("sim returning", abs(val1_t - val2_t) * - 1)
     #return abs(val1_t - val2_t) * -1
-    print("sim returning", (abs(val1 - val2) * - 1)/max_val)
-    return (abs(val1 - val2) * - 1)/max_val
+    print("sim returning", ((abs(val1 - val2) * - 1)/max_val))
+    return ((abs(val1 - val2) * - 1)/max_val)
 
     print("sim returning", abs(val1 - val2) / (max_val - min_val) * - 1)
     return abs(val1 - val2) / (max_val - min_val) * - 1
