@@ -95,23 +95,17 @@ def save_episode(episode, data_path):
     switches_path = os.path.join(episode_path, 'switches.npy')
     switches = np.asarray(switches).reshape(-1, 1)
     np.save(switches_path, switches)
-    label_color_map = [[0, 0, 0], [255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 0], [0, 255, 255]]
-    label_trace = []
-    for time_step in range(len(labels)):
-        label_square = np.zeros((160, 160, 3), dtype=np.uint8)
-        for channel in range(3):
-            channel_color = label_color_map[labels[time_step]][channel]
-            label_square[:,:,channel] = channel_color
-        label_trace.append(label_square)
-    ground_truth_trace = transforms.ToTensor()(ground_truth_trace).permute(1, 2, 0).numpy()
-    label_trace = np.concatenate(label_trace)
-    label_trace = Image.fromarray(label_trace)
-    label_trace = transforms.ToTensor()(label_trace).permute(1, 2, 0).numpy()
-    #labeled_ground_truth_trace = np.concatenate([label_trace, ground_truth_trace], axis=1)
-    #labeled_ground_truth_trace = (labeled_ground_truth_trace * 255 / np.max(labeled_ground_truth_trace)).astype('uint8')
     labels_path = os.path.join(episode_path, 'labels.npy')
+    import pdb; pdb.set_trace()
     labels = np.asarray(labels).reshape(-1, 1)
     np.save(labels_path, labels)
+    symbolic_obs = [np.expand_dims(episode['symbolic_obs'][t], 0) for t in range(len(episode['symbolic_obs']))]
+    symbolic_obs = np.concatenate(symbolic_obs)
+    symbolic_obs_path = os.path.join(episode_path, 'symbolic_obs.npy')
+    np.save(symbolic_obs_path, symbolic_obs)
+    final_activations_path = os.path.join(episode_path, 'final_activations.npy')
+    final_activations = np.concatenate(episode['final_activations'])
+    np.save(final_activations_path, final_activations)
     
 
 import uuid
@@ -128,7 +122,6 @@ if not os.path.isdir(data_path):
 for episode_index in range(640):
     done = False
     obs = env.reset()
-    #print("Instr:", obs["mission"])
     episode = {}
     episode['obs'] = []
     episode['rewards'] = []
@@ -139,11 +132,13 @@ for episode_index in range(640):
     episode['info'] = []
     episode['obs'].append(obs)
     episode['states'].append(env.render().getArray())
+    episode['symbolic_obs'] = []
+    episode['final_activations'] = []
 
 
     while not done:
-        #time.sleep(args.pause)
-        #renderer = env.render("human")
+        time.sleep(args.pause)
+        renderer = env.render("human")
     
         action = agent.get_action(obs)
         episode['actions'].append(action)
@@ -153,6 +148,8 @@ for episode_index in range(640):
         episode['done'].append(done)
         episode['info'].append(info)
         episode['states'].append(env.render().getArray())
+        episode['symbolic_obs'].append(info.pop('symbolic_obs'))
+        episode['final_activations'].append(agent.model.final_activation)
         if len(info.keys()) > 1:
             raise SystemError
         elif len(info.keys()) == 0:
@@ -161,7 +158,7 @@ for episode_index in range(640):
         episode['switches'].append(INFO_MAP[info_keys[0]])
         agent.analyze_feedback(reward, done)
     
-        #if renderer.window is None:
-        #    break
+        if renderer.window is None:
+            break
 
     save_episode(episode, data_path)
