@@ -96,7 +96,7 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         u, v = self.dir_vec
         ox, oy = (self.agent_pos[0] + u, self.agent_pos[1] + v)
         if action == self.actions.toggle and preCarrying and self.grid.get(ox, oy) is not None:
-            if preCarrying.type == 'key' and (self.grid.get(ox, oy).type == 'locked_door'):
+            if preCarrying.type == 'key' and ((self.grid.get(ox, oy).type == 'locked_door') or (self.grid.get(ox, oy).type == 'unlocked_door')):
                 info['unlock_door'] = True
         if done and reward > 0.0:
             info['episode_completed'] = True

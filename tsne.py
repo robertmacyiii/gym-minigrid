@@ -23,12 +23,19 @@ for episode in episode_folders:
     activations = np.load(filepath)
     filepath = os.path.join(root_path, episode, "lockeddoor.pkl")
     locked_flag = pickle.load(open(filepath, 'rb'))
+    filepath = os.path.join(root_path, episode, "labels.npy")
+    labels = np.load(filepath)
+
 
     #want the first activation
     if locked_flag:
         fcs.append((activations[0],'green'))
     else:
         fcs.append((activations[0],'red'))
+
+    #want after the key is picked up
+    print("after key")
+
 
 dims = (len(fcs),64)
 fc = np.zeros(dims)
