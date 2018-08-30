@@ -96,7 +96,6 @@ def save_episode(episode, data_path):
     switches = np.asarray(switches).reshape(-1, 1)
     np.save(switches_path, switches)
     labels_path = os.path.join(episode_path, 'labels.npy')
-    import pdb; pdb.set_trace()
     labels = np.asarray(labels).reshape(-1, 1)
     np.save(labels_path, labels)
     symbolic_obs = [np.expand_dims(episode['symbolic_obs'][t], 0) for t in range(len(episode['symbolic_obs']))]
