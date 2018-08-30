@@ -42,6 +42,10 @@ env.seed(args.seed)
 save_dir = utils.get_save_dir(args.model)
 agent = utils.Agent(save_dir, env.observation_space, args.argmax)
 
+
+#episode type
+lockeddoor = 1
+
 # Run the agent
 
 done = True
@@ -60,7 +64,7 @@ def labels_from_switches(switches):
             index += 1
     return labels
 
-def save_episode(episode, data_path):
+def save_episode(episode, data_path, lockeddoor):
     episode_uuid = uuid.uuid4().hex
     labels = labels_from_switches(episode['switches'])
     episode['labels'] = labels
@@ -117,6 +121,9 @@ def save_episode(episode, data_path):
     symbolic_obs = episode['symbolic_obs']
     with open(symbolic_obs_path, 'wb') as file:
         pkl.dump(symbolic_obs, file)
+    lockeddoor_path = os.path.join(episode_path, 'lockeddoor.pkl')
+    with open(lockeddoor_path, 'wb') as file:
+        pkl.dump(lockeddoor, file)
 
 
 import uuid
@@ -132,7 +139,7 @@ if not os.path.isdir(data_path):
     os.makedirs(data_path)
 
 
-for episode_index in range(2):
+for episode_index in range(10):
     done = False
     obs = env.reset()
     #print("Instr:", obs["mission"])
@@ -175,4 +182,4 @@ for episode_index in range(2):
         #if renderer.window is None:
         #    break
 
-    save_episode(episode, data_path)
+    save_episode(episode, data_path, lockeddoor)

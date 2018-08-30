@@ -9,7 +9,7 @@ import os
 '''Get the data'''
 # pickle_in = open('/Users/paulsomers/COGLE/gym-gridworld/data/tree_grass_trees_100.tj','rb')
 # obs = pickle.load(pickle_in)
-root_path = '/Users/paulsomers/COGLE/saved_gym_minigrid_episodes/mixedputnearlockedmultiroom_n4s6/'
+root_path = '/Users/paulsomers/COGLE/robert-minigrid/gym-minigrid/gym_minigrid/saved_gym_minigrid_episodes/FullObsDoorKeyEnv7x7'
 episode_folders = (next(os.walk(root_path))[1])
 
 

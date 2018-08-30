@@ -47,7 +47,7 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         self.start_pos = self.place_agent(size=(splitIdx, height))
 
         # Place a door in the wall
-        doorIdx = self._rand_int(1, width-2)
+        doorIdx = 4#self._rand_int(1, width-2)
         self.grid.set(splitIdx, doorIdx, LockedDoor('yellow'))
 
         # Place a yellow key on the left side
