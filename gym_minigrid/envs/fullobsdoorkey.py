@@ -48,7 +48,7 @@ class FullObsDoorKeyEnv(MiniGridEnv):
 
         # Place a door in the wall
         doorIdx = 4#self._rand_int(1, width-2)
-        self.grid.set(splitIdx, doorIdx, LockedDoor('yellow'))
+        self.grid.set(splitIdx, doorIdx, Door('yellow'))
 
         # Place a yellow key on the left side
         self.place_obj(
@@ -90,13 +90,15 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         #if obs['image'][:,:,2].sum() > 0:
         #    import pdb; pdb.set_trace()
         #obs['image'][self.agent_pos[0], self.agent_pos[1], 2] = 8
+        #import pdb;
+        #pdb.set_trace()
         if preCarrying is None and self.carrying is not None:
             if self.carrying.type == 'key':
                 info['get_key'] = True
         u, v = self.dir_vec
         ox, oy = (self.agent_pos[0] + u, self.agent_pos[1] + v)
         if action == self.actions.toggle and preCarrying and self.grid.get(ox, oy) is not None:
-            if preCarrying.type == 'key' and ((self.grid.get(ox, oy).type == 'locked_door') or (self.grid.get(ox, oy).type == 'unlocked_door')):
+            if preCarrying.type == 'key' and ((self.grid.get(ox, oy).type == 'locked_door') or (self.grid.get(ox, oy).type == 'door')):
                 info['unlock_door'] = True
         if done and reward > 0.0:
             info['episode_completed'] = True

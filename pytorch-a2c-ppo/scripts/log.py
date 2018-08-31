@@ -44,7 +44,7 @@ agent = utils.Agent(save_dir, env.observation_space, args.argmax)
 
 
 #episode type
-lockeddoor = 1
+lockeddoor = 0
 
 # Run the agent
 
@@ -142,7 +142,7 @@ if not os.path.isdir(data_path):
     os.makedirs(data_path)
 
 
-for episode_index in range(100):
+for episode_index in range(10):
     done = False
     obs = env.reset()
     #print("Instr:", obs["mission"])

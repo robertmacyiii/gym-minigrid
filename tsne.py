@@ -28,13 +28,34 @@ for episode in episode_folders:
 
 
     #want the first activation
-    if locked_flag:
+    if locked_flag == 0:
         fcs.append((activations[0],'green'))
     else:
         fcs.append((activations[0],'red'))
 
-    #want after the key is picked up
+    #want after the key is picked up (the first time)
+    label = 2
+    acount = 0
+    while label == 2:
+        label = labels[acount][0]
+        acount += 1
+    if locked_flag:
+        fcs.append((activations[acount-1],'blue'))
+    else:
+        fcs.append((activations[acount-1],'black'))
+
+    label = 2
+    bcount = 0
+    while label < 4:
+        label = labels[bcount][0]
+        bcount += 1
+    if locked_flag:
+        fcs.append((activations[bcount-1],'yellow'))
+    else:
+        fcs.append((activations[bcount-1],'purple'))
+
     print("after key")
+
 
 
 dims = (len(fcs),64)
