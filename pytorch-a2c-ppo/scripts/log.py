@@ -44,7 +44,7 @@ agent = utils.Agent(save_dir, env.observation_space, args.argmax)
 
 
 #episode type
-lockeddoor = 0
+lockeddoor = 3
 
 # Run the agent
 
@@ -142,7 +142,7 @@ if not os.path.isdir(data_path):
     os.makedirs(data_path)
 
 
-for episode_index in range(10):
+for episode_index in range(100):
     done = False
     obs = env.reset()
     #print("Instr:", obs["mission"])
@@ -158,6 +158,8 @@ for episode_index in range(10):
     episode['states'].append(env.render().getArray())
     episode['symbolic_obs'] = []
     episode['final_activations'] = []
+    env.lockeddoor = lockeddoor
+    env.opened_the_door = False
 
 
     while not done:
@@ -174,6 +176,7 @@ for episode_index in range(10):
         episode['states'].append(env.render().getArray())
         episode['symbolic_obs'].append(info.pop('symbolic_obs'))
         episode['final_activations'].append(agent.model.final_activation)
+        #import pdb;pdb.set_trace()
         if len(info.keys()) > 1:
             raise SystemError
         elif len(info.keys()) == 0:

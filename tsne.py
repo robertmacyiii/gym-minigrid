@@ -29,9 +29,13 @@ for episode in episode_folders:
 
     #want the first activation
     if locked_flag == 0:
-        fcs.append((activations[0],'green'))
-    else:
+        fcs.append((activations[0],'olive'))
+    elif locked_flag == 1:
         fcs.append((activations[0],'red'))
+    elif locked_flag == 2:
+        fcs.append((activations[0],'orange'))
+    else:
+        pass
 
     #want after the key is picked up (the first time)
     label = 2
@@ -39,20 +43,30 @@ for episode in episode_folders:
     while label == 2:
         label = labels[acount][0]
         acount += 1
-    if locked_flag:
+    if locked_flag == 0:
         fcs.append((activations[acount-1],'blue'))
-    else:
+    elif locked_flag == 1:
         fcs.append((activations[acount-1],'black'))
+    elif locked_flag == 2:
+        fcs.append((activations[acount-1],'cyan'))
+    else:
+        fcs.append((activations[acount-1],'fuchsia'))
+
 
     label = 2
     bcount = 0
     while label < 4:
         label = labels[bcount][0]
         bcount += 1
-    if locked_flag:
+    if locked_flag == 0:
         fcs.append((activations[bcount-1],'yellow'))
-    else:
+    elif locked_flag == 1:
         fcs.append((activations[bcount-1],'purple'))
+    elif locked_flag == 2:
+        fcs.append((activations[bcount-1],'chartreuse'))
+    else:
+        fcs.append((activations[bcount-1], 'lightpink'))
+
 
     print("after key")
 
@@ -104,7 +118,7 @@ for i in range(len(fcs)):
 
 tsne = manifold.TSNE(n_components=2, init='pca', random_state=0,perplexity=100)
 X_tsne = tsne.fit_transform(fc)
-plt.scatter(X_tsne[:,0],X_tsne[:,1],c=colors,alpha=0.2)
+plt.scatter(X_tsne[:,0],X_tsne[:,1],c=colors)#,alpha=0.2)
 # plt.tick_params(
 #     axis='both',          # changes apply to the x-axis
 #     which='both',      # both major and minor ticks are affected

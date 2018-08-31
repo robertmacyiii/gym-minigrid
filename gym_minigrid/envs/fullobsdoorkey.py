@@ -51,11 +51,11 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         self.grid.set(splitIdx, doorIdx, Door('yellow'))
 
         # Place a yellow key on the left side
-        self.place_obj(
-            obj=Key('yellow'),
-            top=(0, 0),
-            size=(splitIdx, height)
-        )
+        # self.place_obj(
+        #     obj=Box('yellow'),
+        #     top=(0, 0),
+        #     size=(splitIdx, height)
+        # )
 
         self.mission = "use the key to open the door and then get to the goal"
 
@@ -92,20 +92,40 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         #obs['image'][self.agent_pos[0], self.agent_pos[1], 2] = 8
         #import pdb;
         #pdb.set_trace()
-        if preCarrying is None and self.carrying is not None:
-            if self.carrying.type == 'key':
-                info['get_key'] = True
-        u, v = self.dir_vec
-        ox, oy = (self.agent_pos[0] + u, self.agent_pos[1] + v)
-        if action == self.actions.toggle and preCarrying and self.grid.get(ox, oy) is not None:
-            if preCarrying.type == 'key' and ((self.grid.get(ox, oy).type == 'locked_door') or (self.grid.get(ox, oy).type == 'door')):
-                info['unlock_door'] = True
-        if done and reward > 0.0:
-            info['episode_completed'] = True
-            
-        info['symbolic_obs'] = deepcopy(np.array(grid.grid).reshape(grid.height, grid.width)).transpose()
 
-        return obs, reward, done, info 
+        if self.lockeddoor == 3:
+            if not self.opened_the_door and (not done and reward > 0.0):
+                # if action != self.actions.toggle:
+                info['get_key'] = True
+            u, v = self.dir_vec
+            ox, oy = (self.agent_pos[0] + u, self.agent_pos[1] + v)
+            if action == self.actions.toggle and self.grid.get(ox, oy) is not None:
+                if ((self.grid.get(ox, oy).type == 'locked_door') or (self.grid.get(ox, oy).type == 'door')):
+                    info['unlock_door'] = True
+                    self.opened_the_door = True
+            if done and reward > 0.0:
+                info['episode_completed'] = True
+
+            info['symbolic_obs'] = deepcopy(np.array(grid.grid).reshape(grid.height, grid.width)).transpose()
+
+            return obs, reward, done, info
+
+        else:
+
+            if preCarrying is None and self.carrying is not None:
+                if self.carrying.type == 'key' or self.carrying.type == 'box':
+                    info['get_key'] = True
+            u, v = self.dir_vec
+            ox, oy = (self.agent_pos[0] + u, self.agent_pos[1] + v)
+            if action == self.actions.toggle and preCarrying and self.grid.get(ox, oy) is not None:
+                if (preCarrying.type == 'key' or preCarrying.type == 'box') and ((self.grid.get(ox, oy).type == 'locked_door') or (self.grid.get(ox, oy).type == 'door')):
+                    info['unlock_door'] = True
+            if done and reward > 0.0:
+                info['episode_completed'] = True
+
+            info['symbolic_obs'] = deepcopy(np.array(grid.grid).reshape(grid.height, grid.width)).transpose()
+
+            return obs, reward, done, info
  
 
 class FullObsDoorKeyEnv5x5(FullObsDoorKeyEnv):
