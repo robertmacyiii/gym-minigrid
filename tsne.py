@@ -25,15 +25,17 @@ for episode in episode_folders:
     locked_flag = pickle.load(open(filepath, 'rb'))
     filepath = os.path.join(root_path, episode, "labels.npy")
     labels = np.load(filepath)
+    filepath = os.path.join(root_path, episode, "targets.npy")
+    targets = np.load(filepath)
 
 
     #want the first activation
     if locked_flag == 0:
-        fcs.append((activations[0],'olive'))
+        fcs.append((activations[0],targets[0][0]))
     elif locked_flag == 1:
-        fcs.append((activations[0],'red'))
+        fcs.append((activations[0],targets[0][0]))
     elif locked_flag == 2:
-        fcs.append((activations[0],'orange'))
+        fcs.append((activations[0],targets[0][0]))
     else:
         pass
 
@@ -44,13 +46,13 @@ for episode in episode_folders:
         label = labels[acount][0]
         acount += 1
     if locked_flag == 0:
-        fcs.append((activations[acount-1],'blue'))
+        fcs.append((activations[acount-1],targets[acount-1][0]))
     elif locked_flag == 1:
-        fcs.append((activations[acount-1],'black'))
+        fcs.append((activations[acount-1],targets[acount-1][0]))
     elif locked_flag == 2:
-        fcs.append((activations[acount-1],'cyan'))
+        fcs.append((activations[acount-1],targets[acount-1][0]))
     else:
-        fcs.append((activations[acount-1],'fuchsia'))
+        fcs.append((activations[acount-1],targets[acount-1][0]))
 
 
     label = 2
@@ -59,13 +61,13 @@ for episode in episode_folders:
         label = labels[bcount][0]
         bcount += 1
     if locked_flag == 0:
-        fcs.append((activations[bcount-1],'yellow'))
+        fcs.append((activations[bcount-1],targets[bcount-1][0]))
     elif locked_flag == 1:
-        fcs.append((activations[bcount-1],'purple'))
+        fcs.append((activations[bcount-1],targets[bcount-1][0]))
     elif locked_flag == 2:
-        fcs.append((activations[bcount-1],'chartreuse'))
+        fcs.append((activations[bcount-1],targets[bcount-1][0]))
     else:
-        fcs.append((activations[bcount-1], 'lightpink'))
+        fcs.append((activations[bcount-1], targets[bcount-1][0]))
 
 
     print("after key")
