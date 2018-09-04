@@ -16,7 +16,7 @@ def model_exists(save_dir):
 
 def load_model(save_dir):
     path = get_model_path(save_dir)
-    model = torch.load(path)
+    model = torch.load(path, map_location=lambda storage, loc: storage)
     model.eval()
     return model
 
