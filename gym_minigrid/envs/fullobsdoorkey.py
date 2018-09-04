@@ -47,15 +47,20 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         self.start_pos = self.place_agent(size=(splitIdx, height))
 
         # Place a door in the wall
-        doorIdx = 4#self._rand_int(1, width-2)
-        self.grid.set(splitIdx, doorIdx, Door('yellow'))
+        if self.lockeddoor == 0:
+            doorIdx = 4#self._rand_int(1, width-2)
+            self.grid.set(splitIdx, doorIdx, LockedDoor('yellow'))
+        elif self.lockeddoor == 1:
+            doorIdx = 4  # self._rand_int(1, width-2)
+            self.grid.set(splitIdx, doorIdx, Door('yellow'))
 
         # Place a yellow key on the left side
-        # self.place_obj(
-        #     obj=Box('yellow'),
-        #     top=(0, 0),
-        #     size=(splitIdx, height)
-        # )
+        if self.lockeddoor == 0 or self.lockeddoor == 1:
+            self.place_obj(
+                obj=Key('yellow'),
+                top=(0, 0),
+                size=(splitIdx, height)
+            )
 
         self.mission = "use the key to open the door and then get to the goal"
 

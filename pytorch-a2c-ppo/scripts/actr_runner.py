@@ -170,6 +170,9 @@ for episode_index in range(1):
     episode['states'].append(env.render().getArray())
     episode['symbolic_obs'] = []
     episode['final_activations'] = []
+    env.lockeddoor = lockeddoor
+    env.opened_the_door = False
+
 
     while not done:
         # time.sleep(args.pause)

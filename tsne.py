@@ -31,11 +31,11 @@ for episode in episode_folders:
 
     #want the first activation
     if locked_flag == 0:
-        fcs.append((activations[0],targets[0][0]))
+        fcs.append((activations[0],'olive'))
     elif locked_flag == 1:
-        fcs.append((activations[0],targets[0][0]))
+        fcs.append((activations[0],'red'))
     elif locked_flag == 2:
-        fcs.append((activations[0],targets[0][0]))
+        fcs.append((activations[0],'orange'))
     else:
         pass
 
@@ -46,13 +46,13 @@ for episode in episode_folders:
         label = labels[acount][0]
         acount += 1
     if locked_flag == 0:
-        fcs.append((activations[acount-1],targets[acount-1][0]))
+        fcs.append((activations[acount-1],'blue'))
     elif locked_flag == 1:
-        fcs.append((activations[acount-1],targets[acount-1][0]))
+        fcs.append((activations[acount-1],'black'))
     elif locked_flag == 2:
-        fcs.append((activations[acount-1],targets[acount-1][0]))
+        fcs.append((activations[acount-1],'cyan'))
     else:
-        fcs.append((activations[acount-1],targets[acount-1][0]))
+        fcs.append((activations[acount-1],'fuchsia'))
 
 
     label = 2
@@ -61,13 +61,13 @@ for episode in episode_folders:
         label = labels[bcount][0]
         bcount += 1
     if locked_flag == 0:
-        fcs.append((activations[bcount-1],targets[bcount-1][0]))
+        fcs.append((activations[bcount-1],'yellow'))
     elif locked_flag == 1:
-        fcs.append((activations[bcount-1],targets[bcount-1][0]))
+        fcs.append((activations[bcount-1],'purple'))
     elif locked_flag == 2:
-        fcs.append((activations[bcount-1],targets[bcount-1][0]))
+        fcs.append((activations[bcount-1],'chartreuse'))
     else:
-        fcs.append((activations[bcount-1], targets[bcount-1][0]))
+        fcs.append((activations[bcount-1], 'lightpink'))
 
 
     print("after key")
