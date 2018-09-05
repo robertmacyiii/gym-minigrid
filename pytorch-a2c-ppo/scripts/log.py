@@ -142,7 +142,7 @@ if not os.path.isdir(data_path):
     os.makedirs(data_path)
 
 
-for episode_index in range(100):
+for episode_index in range(1000):
     done = False
     obs = env.reset()
     #print("Instr:", obs["mission"])

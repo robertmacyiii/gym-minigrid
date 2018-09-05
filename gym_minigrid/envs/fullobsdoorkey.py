@@ -3,17 +3,78 @@ import numpy as np
 from gym_minigrid.minigrid import *
 from gym_minigrid.register import register
 
+#class FullObsDoorKeyEnv(MiniGridEnv):
+#    """
+#    Environment with a door and key, sparse reward
+#    """
+#
+#    def __init__(self, size=8):
+#        super().__init__(
+#            grid_size=size,
+#            max_steps=10*size*size
+#        )
+#
+#        self.observation_space = spaces.Box(
+#            low=0,
+#            high=255,
+#            shape=(size, size, 3),
+#            dtype='uint8'
+#        )
+#        self.observation_space = spaces.Dict({
+#            'image': self.observation_space
+#        })
+#
+#    def _gen_grid(self, width, height):
+#
+#
+#        # Create an empty grid
+#        self.grid = Grid(width, height)
+#
+#        # Generate the surrounding walls
+#        self.grid.wall_rect(0, 0, width, height)
+#
+#        # Place a goal in the bottom-right corner
+#        self.grid.set(width - 2, height - 2, Goal())
+#
+#        # Create a vertical splitting wall
+#        #import pdb;pdb.set_trace()
+#        #np.random.seed(1234)
+#        splitIdx = 3#self._rand_int(2, width-2)
+#        self.grid.vert_wall(splitIdx, 0)
+#
+#        # Place the agent at a random position and orientation
+#        # on the left side of the splitting wall
+#        self.start_pos = self.place_agent(size=(splitIdx, height))
+#
+#        # Place a door in the wall
+#        if self.lockeddoor == 0:
+#            doorIdx = 4#self._rand_int(1, width-2)
+#            self.grid.set(splitIdx, doorIdx, LockedDoor('yellow'))
+#        elif self.lockeddoor == 1:
+#            doorIdx = 4  # self._rand_int(1, width-2)
+#            self.grid.set(splitIdx, doorIdx, Door('yellow'))
+#
+#        # Place a yellow key on the left side
+#        if self.lockeddoor == 0 or self.lockeddoor == 1:
+#            self.place_obj(
+#                obj=Key('yellow'),
+#                top=(0, 0),
+#                size=(splitIdx, height)
+#            )
+#
+#        self.mission = "use the key to open the door and then get to the goal"
 class FullObsDoorKeyEnv(MiniGridEnv):
     """
     Environment with a door and key, sparse reward
     """
-
+  
     def __init__(self, size=8):
+        self.lockeddoor = 0
         super().__init__(
             grid_size=size,
             max_steps=10*size*size
         )
-
+  
         self.observation_space = spaces.Box(
             low=0,
             high=255,
@@ -23,29 +84,29 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         self.observation_space = spaces.Dict({
             'image': self.observation_space
         })
-
+  
     def _gen_grid(self, width, height):
-
-
+  
+  
         # Create an empty grid
         self.grid = Grid(width, height)
-
+  
         # Generate the surrounding walls
         self.grid.wall_rect(0, 0, width, height)
-
+  
         # Place a goal in the bottom-right corner
         self.grid.set(width - 2, height - 2, Goal())
-
+  
         # Create a vertical splitting wall
         #import pdb;pdb.set_trace()
         #np.random.seed(1234)
         splitIdx = 3#self._rand_int(2, width-2)
         self.grid.vert_wall(splitIdx, 0)
-
+  
         # Place the agent at a random position and orientation
         # on the left side of the splitting wall
         self.start_pos = self.place_agent(size=(splitIdx, height))
-
+  
         # Place a door in the wall
         if self.lockeddoor == 0:
             doorIdx = 4#self._rand_int(1, width-2)
@@ -53,7 +114,7 @@ class FullObsDoorKeyEnv(MiniGridEnv):
         elif self.lockeddoor == 1:
             doorIdx = 4  # self._rand_int(1, width-2)
             self.grid.set(splitIdx, doorIdx, Door('yellow'))
-
+  
         # Place a yellow key on the left side
         if self.lockeddoor == 0 or self.lockeddoor == 1:
             self.place_obj(
@@ -61,7 +122,7 @@ class FullObsDoorKeyEnv(MiniGridEnv):
                 top=(0, 0),
                 size=(splitIdx, height)
             )
-
+  
         self.mission = "use the key to open the door and then get to the goal"
 
     def reset(self):

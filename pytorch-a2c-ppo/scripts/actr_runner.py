@@ -6,6 +6,10 @@ import gym
 import os
 import time
 
+
+import cogle_xai_state_abstractor.utils.general as general
+from cogle_xai_state_abstractor.utils.general import build_default_model
+
 try:
     import gym_minigrid
 except ImportError:
@@ -143,13 +147,17 @@ import pickle as pkl
 from torchvision import transforms
 
 import importlib.util
-spec = importlib.util.spec_from_file_location("key_door_box", "/Users/paulsomers/COGLE/robert-minigrid/gym-minigrid/key_door_box.py")
-key_door_box = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(key_door_box)
+#spec = importlib.util.spec_from_file_location("key_door_box", "/Users/paulsomers/COGLE/robert-minigrid/gym-minigrid/key_door_box.py")
+#spec = importlib.util.spec_from_file_location("key_door_box", os.path.join(os.path.split(gym_minigrid.__path__[0])[0], "key_door_box.py"))
+#key_door_box = importlib.util.module_from_spec(spec)
+#spec.loader.exec_module(key_door_box)
 
-spec = importlib.util.spec_from_file_location("build_chunks", "/Users/paulsomers/COGLE/robert-minigrid/gym-minigrid/build_chunks.py")
-build_chunks = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(build_chunks)
+#spec = importlib.util.spec_from_file_location("build_chunks", "/Users/paulsomers/COGLE/robert-minigrid/gym-minigrid/build_chunks.py")
+#spec = importlib.util.spec_from_file_location("build_chunks", os.path.join(os.path.split(gym_minigrid.__path__[0])[0], "build_chunks.py"))
+
+#build_chunks = importlib.util.module_from_spec(spec)
+#spec.loader.exec_module(build_chunks)
+segmentation_model = build_default_model()
 
 if not os.path.isdir(data_path):
     os.makedirs(data_path)
@@ -172,7 +180,7 @@ for episode_index in range(1):
     episode['final_activations'] = []
     env.lockeddoor = lockeddoor
     env.opened_the_door = False
-
+    hiddens = None
 
     while not done:
         # time.sleep(args.pause)
@@ -188,11 +196,13 @@ for episode_index in range(1):
         episode['states'].append(env.render().getArray())
         episode['symbolic_obs'].append(info.pop('symbolic_obs'))
         episode['final_activations'].append(agent.model.final_activation)
-        #import pdb;pdb.set_trace()
+        import pdb;pdb.set_trace()
+        timestep_input = general.preprocess_timestep_input(obs['image'])
+        segment_id, hiddens = segmentation_model.predict_timestep(timestep_input)
         activation = episode['final_activations'][0]
         activation = activation.data.numpy()
-        chunk = build_chunks.build_chunk('observation',episode['symbolic_obs'][-1],lockeddoor,np.ndarray.tolist(activation))
-        runactr = key_door_box.probe(chunk)
+        #chunk = build_chunks.build_chunk('observation',episode['symbolic_obs'][-1],lockeddoor,np.ndarray.tolist(activation))
+        #runactr = key_door_box.probe(chunk)
         done = True
         if len(info.keys()) > 1:
             raise SystemError

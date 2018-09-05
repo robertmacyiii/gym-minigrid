@@ -10,3 +10,4 @@ from gym_minigrid.envs.playground_v0 import *
 from gym_minigrid.envs.redbluedoors import *
 from gym_minigrid.envs.mixedputnearlockedmultiroom import *
 from gym_minigrid.envs.fullobsdoorkey import *
+from gym_minigrid.envs.originalfullobsdoorkey import *
