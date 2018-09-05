@@ -10,6 +10,9 @@ not_dicts = ['FILLED-SLOTS','EMPTY-SLOTS','BLENDED-SLOTS','IGNORED-SLOTS','RESUL
 
 similarities_by_time = {}
 
+history = []
+current_response = None
+
 def choose(items,chances):
     p = chances[0]
     x = random.random()
@@ -71,8 +74,14 @@ def similarity(val1, val2):
     print("sim returning", abs(val1 - val2) / (max_val - min_val) * - 1)
     return abs(val1 - val2) / (max_val - min_val) * - 1
 
+def record_response(*args):
+    print("current response called")
+    global current_response
+    current_response = {args[0]:args[1],args[2]:args[3],args[4]:args[5]}
+
 
 actr.add_command('similarity_function',similarity)
+actr.add_command('record_response', record_response)
 #actr.add_command('new_blend_request', new_blend_request)
 actr.load_act_r_model("/Users/paulsomers/COGLE/robert-minigrid/gym-minigrid/key-door-box.lisp")
 actr.record_history("blending-trace")
@@ -103,6 +112,7 @@ def load_chunks():
 #chk = ['isa', 'observation', 'key', 0, 'wall', 1, 'has_key', 1, 'lockeddoor', 0, 'goal', 1]
 
 def probe(observation):
+    salience_history = {}
     chunk = actr.define_chunks(observation)
     actr.schedule_simple_event_now("set-buffer-chunk",
                                 ['imaginal', chunk[0]])
@@ -119,19 +129,24 @@ def probe(observation):
     # #the values
     # vs = [actr.chunk_slot_value(x,'value') for x in chunk_names]
     #
-    factors = ['key', 'lockeddoor', 'door', 'goal', 'wall']
+
+    #factors = ['key', 'lockeddoor', 'door', 'goal', 'wall']
+    factors = ['Key', 'Door', 'Goal', 'Wall']
     # factors = ['needsFood', 'needsWater']
     result_factors = ['get_key', 'open_door', 'goto_goal']
     # result_factors = ['food','water']
     results = compute_S(d, factors)  # ,'f3'])
     for sums, result_factor in zip(results, result_factors):
         print("For", result_factor)
+        salience_history[result_factor] = {}
         for s, factor in zip(sums, factors):
             print(factor, MP / t * sum(s))
+            salience_history[result_factor][factor] = MP / t * sum(s)
 
-    print("actual value is", actr.chunk_slot_value('OBSERVATION0', 'ACTUAL'))
+    return [current_response,salience_history]
+    #print("actual value is", actr.chunk_slot_value('OBSERVATION0', 'ACTUAL'))
 
-    print("done")
+    #print("done")
 
 
 def compute_S(blend_trace, keys_list):

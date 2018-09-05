@@ -19,7 +19,7 @@ def build_chunk(isa,label,locked_flag,fc=-1):
     #print("EP>>>>>>>>>", type(ep))
 
     #visibles = {'Wall': False, 'Key': False, 'LockedDoor': False, 'Goal': False, 'Door': False}
-    if locked_flag == 0:#key, locked door
+    if locked_flag == 0 or locked_flag == 1:#key, locked door
         visibles = {'Wall': False, 'Key': False, 'Door': False, 'Goal': False}
         label_map = {2:['Wall','Key','Door','Goal'],3:['Wall','Door','Goal'],4:['Wall','Goal']}
 
@@ -37,7 +37,7 @@ def build_chunk(isa,label,locked_flag,fc=-1):
         chunk.append(key)
         chunk.append([key,int(visibles[key])])
 
-    if locked_flag == 0:
+    if locked_flag == 0 or locked_flag == 1:
         #generalize to Door from LockedDoor
         chunk.append('get_key')
         if visibles['Key'] and visibles['Door']:
@@ -156,6 +156,6 @@ def build_chunks_from_data():
 
 
 #Sample code
-chunks = build_chunks_from_data()
-#pickle.dump(chunks, open('chunks.p','wb'))
+# chunks = build_chunks_from_data()
+# pickle.dump(chunks, open('chunks.p','wb'))
 #print("done")

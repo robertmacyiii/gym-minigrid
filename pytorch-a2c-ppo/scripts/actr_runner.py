@@ -170,7 +170,8 @@ for episode_index in range(1):
     episode['states'].append(env.render().getArray())
     episode['symbolic_obs'] = []
     episode['final_activations'] = []
-    env.lockeddoor = lockeddoor
+    episode['actr'] = []
+    env.lockeddoor = 0
     env.opened_the_door = False
 
 
@@ -188,11 +189,20 @@ for episode_index in range(1):
         episode['states'].append(env.render().getArray())
         episode['symbolic_obs'].append(info.pop('symbolic_obs'))
         episode['final_activations'].append(agent.model.final_activation)
+        labels = labels_from_switches(episode['switches'])
         #import pdb;pdb.set_trace()
         activation = episode['final_activations'][0]
         activation = activation.data.numpy()
-        chunk = build_chunks.build_chunk('observation',episode[info][0],env.lockeddoor,-1)#,np.ndarray.tolist(activation))
-        runactr = key_door_box.probe(chunk)
+        if not labels: #assuming it will get populated when there are more than 1 step. for now,  because we only need 1 step
+            label = 2
+        else:
+            label = labels[-1]
+        chunk = build_chunks.build_chunk('observation',label,env.lockeddoor,-1)#,np.ndarray.tolist(activation))
+
+        history = [chunk]
+        history.append(key_door_box.probe(chunk)) #run actr should now have [current,salience]
+        #import pdb;pdb.set_trace()
+        episode['actr'].append(history)
         done = True
         if len(info.keys()) > 1:
             raise SystemError
@@ -205,5 +215,8 @@ for episode_index in range(1):
 
         # if renderer.window is None:
         #    break
-
+    #import pdb;pdb.set_trace()
+    history_path = os.path.join('/Users/paulsomers/COGLE/robert-minigrid/gym-minigrid/gym_minigrid/saved_gym_minigrid_episodes/actr/','actr_history.p')
+    with open(history_path, 'wb') as file:
+        pkl.dump(episode['actr'], file)
     #save_episode(episode, data_path, lockeddoor)
