@@ -12,56 +12,89 @@ episode_folders = (next(os.walk(root_path))[1])
 
 
 
-def build_chunk(isa,symbolic_obs,locked_flag,fc=-1):
+def build_chunk(isa,label,locked_flag,fc=-1):
 
     #for ep in symbolic_obs:
-    ep = symbolic_obs
-    print("EP>>>>>>>>>", type(ep))
-    visibles = {'Wall': False, 'Key': False, 'LockedDoor': False, 'Goal': False, 'Door': False}
-    for x, y in list(itertools.product(range(0, ep.shape[0]), range(0, ep.shape[1]))):
-        if ep[x, y] is not None:
-            if (type(ep[x, y])).__name__ in visibles:
-                visibles[type(ep[x, y]).__name__] = True
+    #ep = symbolic_obs
+    #print("EP>>>>>>>>>", type(ep))
+
+    #visibles = {'Wall': False, 'Key': False, 'LockedDoor': False, 'Goal': False, 'Door': False}
+    if locked_flag == 0:#key, locked door
+        visibles = {'Wall': False, 'Key': False, 'Door': False, 'Goal': False}
+        label_map = {2:['Wall','Key','Door','Goal'],3:['Wall','Door','Goal'],4:['Wall','Goal']}
+
+    for key in label_map[label]:
+        visibles[key] = True
+
+
+    # for x, y in list(itertools.product(range(0, ep.shape[0]), range(0, ep.shape[1]))):
+    #     if ep[x, y] is not None:
+    #         if (type(ep[x, y])).__name__ in visibles:
+    #             visibles[type(ep[x, y]).__name__] = True
 
     chunk = ['isa', isa]
-
     for key in visibles.keys():
         chunk.append(key)
         chunk.append([key,int(visibles[key])])
-    if type(fc) != int:
-        chunk.append('fc')
-        chunk.append(['fc',repr(list(fc))])
 
-    if locked_flag:
+    if locked_flag == 0:
+        #generalize to Door from LockedDoor
         chunk.append('get_key')
-        if visibles['Key'] and visibles['LockedDoor']:
+        if visibles['Key'] and visibles['Door']:
             chunk.append(['get_key',1])
         else:
             chunk.append(['get_key',0])
         chunk.append('open_door')
-        if visibles['LockedDoor'] and not visibles['Key']:
+        if visibles['Door'] and not visibles['Key']:
             chunk.append(['open_door',1])
         else:
             chunk.append(['open_door',0])
         chunk.append('goto_goal')
-        if not visibles['LockedDoor'] and not visibles['Key']:
+        if not visibles['Door'] and not visibles['Key']:
             chunk.append(['goto_goal',1])
         else:
             chunk.append(['goto_goal',0])
-    else:
-        chunk.append('get_key')
-        chunk.append(['get_key',0])
-        chunk.append('open_door')
-        if visibles['Door']:
-            chunk.append(['open_door',1])
-        else:
-            chunk.append(['open_door',0])
-        chunk.append('goto_goal')
-        if not visibles['Door']:
-            chunk.append(['goto_goal',1])
-        else:
-            chunk.append(['goto_goal',0])
+
     return chunk
+
+
+    # for key in visibles.keys():
+    #     chunk.append(key)
+    #     chunk.append([key,int(visibles[key])])
+    # if type(fc) != int:
+    #     chunk.append('fc')
+    #     chunk.append(['fc',repr(list(fc))])
+    #
+    # if locked_flag:
+    #     chunk.append('get_key')
+    #     if visibles['Key'] and visibles['LockedDoor']:
+    #         chunk.append(['get_key',1])
+    #     else:
+    #         chunk.append(['get_key',0])
+    #     chunk.append('open_door')
+    #     if visibles['LockedDoor'] and not visibles['Key']:
+    #         chunk.append(['open_door',1])
+    #     else:
+    #         chunk.append(['open_door',0])
+    #     chunk.append('goto_goal')
+    #     if not visibles['LockedDoor'] and not visibles['Key']:
+    #         chunk.append(['goto_goal',1])
+    #     else:
+    #         chunk.append(['goto_goal',0])
+    # else:
+    #     chunk.append('get_key')
+    #     chunk.append(['get_key',0])
+    #     chunk.append('open_door')
+    #     if visibles['Door']:
+    #         chunk.append(['open_door',1])
+    #     else:
+    #         chunk.append(['open_door',0])
+    #     chunk.append('goto_goal')
+    #     if not visibles['Door']:
+    #         chunk.append(['goto_goal',1])
+    #     else:
+    #         chunk.append(['goto_goal',0])
+    # return chunk
 
 
 
@@ -112,15 +145,17 @@ def build_chunks_from_data():
             if labels[i] != previous_lab:
                 steps.append(i)
                 previous_lab = labels[i]
-        labels2 = [labels[i] for i in range(len(labels)) if i in steps]
-        symbolic_obs2 = [symbolic_obs[i] for i in range(len(symbolic_obs)) if i in steps]
-        activations = [activations[i] for i in range(len(activations)) if i in steps]
-        for s,a in zip(symbolic_obs2,activations):
-            chunks.append(build_chunk('decision',s,locked_flag,a))
+        for step in steps:
+            chunks.append(build_chunk('decision',labels[step][0],locked_flag,-1))
+        # labels2 = [labels[i] for i in range(len(labels)) if i in steps]
+        # symbolic_obs2 = [symbolic_obs[i] for i in range(len(symbolic_obs)) if i in steps]
+        # activations = [activations[i] for i in range(len(activations)) if i in steps]
+        # for s,a in zip(symbolic_obs2,activations):
+        #     chunks.append(build_chunk('decision',s,locked_flag,a))
     return chunks
 
 
 #Sample code
-#chunks = build_chunks_from_data()
+chunks = build_chunks_from_data()
 #pickle.dump(chunks, open('chunks.p','wb'))
 #print("done")

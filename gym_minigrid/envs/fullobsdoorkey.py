@@ -9,6 +9,7 @@ class FullObsDoorKeyEnv(MiniGridEnv):
     """
 
     def __init__(self, size=8):
+        self.lockeddoor = 0
         super().__init__(
             grid_size=size,
             max_steps=10*size*size

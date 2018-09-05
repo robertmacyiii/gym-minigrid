@@ -43,7 +43,7 @@ save_dir = utils.get_save_dir(args.model)
 agent = utils.Agent(save_dir, env.observation_space, args.argmax)
 
 # episode type
-lockeddoor = 0
+#lockeddoor = 0
 
 # Run the agent
 
@@ -191,7 +191,7 @@ for episode_index in range(1):
         #import pdb;pdb.set_trace()
         activation = episode['final_activations'][0]
         activation = activation.data.numpy()
-        chunk = build_chunks.build_chunk('observation',episode['symbolic_obs'][-1],lockeddoor,np.ndarray.tolist(activation))
+        chunk = build_chunks.build_chunk('observation',episode[info][0],env.lockeddoor,-1)#,np.ndarray.tolist(activation))
         runactr = key_door_box.probe(chunk)
         done = True
         if len(info.keys()) > 1:

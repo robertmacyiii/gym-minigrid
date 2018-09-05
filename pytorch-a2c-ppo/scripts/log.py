@@ -44,7 +44,7 @@ agent = utils.Agent(save_dir, env.observation_space, args.argmax)
 
 
 #episode type
-lockeddoor = 3
+#lockeddoor = 3
 
 # Run the agent
 
@@ -158,7 +158,7 @@ for episode_index in range(100):
     episode['states'].append(env.render().getArray())
     episode['symbolic_obs'] = []
     episode['final_activations'] = []
-    env.lockeddoor = lockeddoor
+    env.lockeddoor = 0#lockeddoor
     env.opened_the_door = False
 
 
@@ -189,4 +189,4 @@ for episode_index in range(100):
         #if renderer.window is None:
         #    break
 
-    save_episode(episode, data_path, lockeddoor)
+    save_episode(episode, data_path, env.lockeddoor)
